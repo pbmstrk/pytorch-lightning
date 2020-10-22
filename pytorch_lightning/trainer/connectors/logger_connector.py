@@ -197,7 +197,10 @@ class LoggerConnector:
             self.callback_metrics.update(forked_metrics)
 
             # track the final results for the dataloader
-            self.eval_loop_results.append(deepcopy(self.callback_metrics))
+            self.eval_loop_results.append({key: val.data if isinstance(val, torch.Tensor) else val 
+                            for key, val in self.callback_metrics.items()})
+
+            
 
             # actually log
             if len(logger_metrics) > 0:
