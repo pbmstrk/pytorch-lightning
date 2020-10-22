@@ -149,6 +149,13 @@ class Metric(nn.Module, ABC):
         """
         Automatically calls ``update()``. Returns the metric value over inputs if ``compute_on_step`` is True.
         """
+
+        args = [arg.detach() if isinstance(arg, torch.Tensor) and 
+                        not arg.is_leaf else arg for arg in args]
+        
+        kwargs = {key: arg.detach() if isinstance(arg, torch.Tensor) and 
+                        not arg.is_leaf else arg for key, arg in kwargs.items()}
+
         # add current step
         self.update(*args, **kwargs)
         self._forward_cache = None
