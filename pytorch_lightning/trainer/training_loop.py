@@ -576,7 +576,8 @@ class TrainLoop:
             self.save_loggers_on_train_batch_end()
 
             # update LR schedulers
-            monitor_metrics = deepcopy(self.trainer.logger_connector.callback_metrics)
+            monitor_metrics = {key: val.data if isinstance(val, torch.Tensor) else val 
+                            for key, val in self.trainer.logger_connector.callback_metrics.items()}
             monitor_metrics.update(batch_output.batch_log_metrics)
             self.update_train_loop_lr_schedulers(monitor_metrics=monitor_metrics)
 
